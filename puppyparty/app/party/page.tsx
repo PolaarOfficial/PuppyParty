@@ -7,6 +7,5 @@ export default function Page(){
         a signout button, a search bar, a toggle slide for wild to friends,
         and a button to party!
         </p>
-        <Link href="/profile"><span>Profile</span></Link>
         </main>);
 }
