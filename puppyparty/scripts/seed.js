@@ -23,8 +23,8 @@ const {
       const insertedPuppies = await Promise.all(
         puppies.map(async (puppy) => {
           return client.sql`
-          INSERT INTO puppies (name, email, sex, birthday)
-          VALUES (${puppy.name}, ${puppy.email}, ${puppy.sex}, ${puppy.birthday})
+          INSERT INTO puppies (id, name, email, sex, birthday)
+          VALUES (${puppy.id},${puppy.name}, ${puppy.email}, ${puppy.sex}, ${puppy.birthday})
           ON CONFLICT (id) DO NOTHING;
         `;
         }),
@@ -48,14 +48,14 @@ const {
       const createTable = await client.sql`
         CREATE TABLE IF NOT EXISTS notifications (
           id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-          pupId UUID NOT NULL,
-          typeOfRequest VARCHAR(6), 
-          friendRequestId UUID,
-          partyRequestId UUID,
-          timeCreated TIMESTAMP NOT NULL,
-          CONSTRAINT fkPupId FOREIGN KEY (pupId) REFERENCES puppies(id),
-          CONSTRAINT fkFriendRequestId FOREIGN KEY (friendRequestId) REFERENCES request(id),
-          CONSTRAINT fkPartyRequestId FOREIGN KEY (partyRequestId) REFERENCES party(id)
+          pup_id UUID NOT NULL,
+          type_of_request VARCHAR(6), 
+          friend_request_id UUID,
+          party_request_id UUID,
+          time_created TIMESTAMP NOT NULL,
+          CONSTRAINT fkPupId FOREIGN KEY (pup_id) REFERENCES puppies(id),
+          CONSTRAINT fkFriendRequestId FOREIGN KEY (friend_request_id) REFERENCES requests(id),
+          CONSTRAINT fkPartyRequestId FOREIGN KEY (party_request_id) REFERENCES parties(id)
         );
       `;
   
@@ -65,8 +65,8 @@ const {
       const insertedNotifications = await Promise.all(
         notifications.map(async (notification) => {
           return client.sql`
-          INSERT INTO notifications (pupId, typeOfRequest, friendRequestId, partyRequestId, timeCreated )
-          VALUES (${notification.pupId}, ${notification.typeOfRequest}, ${notification.friendRequestId}, ${notification.partyRequestId}, ${notification.timeCreated})
+          INSERT INTO notifications (id, pup_id, type_of_request, friend_request_id, party_request_id, time_created )
+          VALUES (${notification.id},${notification.pup_id}, ${notification.type_of_request}, ${notification.friend_request_id}, ${notification.party_request_id}, ${notification.time_created})
           ON CONFLICT (id) DO NOTHING;
         `;
         }),
@@ -89,24 +89,24 @@ const {
       await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
       // Create the "users" table if it doesn't exist
       const createTable = await client.sql`
-        CREATE TABLE IF NOT EXISTS party (
+        CREATE TABLE IF NOT EXISTS parties (
           id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-          pupId UUID NOT NULL,
+          pup_id UUID NOT NULL,
           location VARCHAR(30), 
-          timeStarted TIMESTAMP NOT NULL,
+          time_started TIMESTAMP NOT NULL,
           ended BOOLEAN DEFAULT FALSE,
-          CONSTRAINT fkPupId FOREIGN KEY (pupId) REFERENCES puppies(id)
+          CONSTRAINT fkPupId FOREIGN KEY (pup_id) REFERENCES puppies(id)
         );
       `;
   
-      console.log(`Created "party" table`);
+      console.log(`Created "parties" table`);
   
       // Insert data into the "users" table
       const insertedParties = await Promise.all(
         parties.map(async (party) => {
           return client.sql`
-          INSERT INTO party (pupId, location, timeStarted, ended )
-          VALUES (${party.pupId}, ${party.location}, ${party.timeStarted}, ${party.ended})
+          INSERT INTO parties (id, pup_id, location, time_started, ended )
+          VALUES (${party.id},${party.pup_id}, ${party.location}, ${party.time_started}, ${party.ended})
           ON CONFLICT (id) DO NOTHING;
         `;
         }),
@@ -129,24 +129,24 @@ const {
       await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
       // Create the "users" table if it doesn't exist
       const createTable = await client.sql`
-        CREATE TABLE IF NOT EXISTS request (
+        CREATE TABLE IF NOT EXISTS requests (
           id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-          requesterId UUID NOT NULL,
-          requesteeId UUID NOT NULL,
+          requester_id UUID NOT NULL,
+          requestee_id UUID NOT NULL,
           status VARCHAR(8),
-          CONSTRAINT fkrequestedPupId FOREIGN KEY (requesterId) REFERENCES puppies(id),
-          CONSTRAINT fkrequesteePupId FOREIGN KEY (requesteeId) REFERENCES puppies(id)
+          CONSTRAINT fkrequestedPupId FOREIGN KEY (requester_id) REFERENCES puppies(id),
+          CONSTRAINT fkrequesteePupId FOREIGN KEY (requestee_id) REFERENCES puppies(id)
         );
       `;
   
-      console.log(`Created "request" table`);
+      console.log(`Created "requests" table`);
   
       // Insert data into the "users" table
       const insertedRequests = await Promise.all(
         requests.map(async (request) => {
           return client.sql`
-          INSERT INTO request (requesterID, requesteeID, status )
-          VALUES (${request.requesterId}, ${request.requesteeId}, ${request.status})
+          INSERT INTO requests (id, requester_id, requestee_id, status )
+          VALUES (${request.id}, ${request.requester_id}, ${request.requestee_id}, ${request.status})
           ON CONFLICT (id) DO NOTHING;
         `;
         }),
@@ -169,9 +169,11 @@ const {
   async function main() {
     const client = await db.connect();
     // await seedPuppies(client);
-    await seedNotifications(client);
-    // await seedParty(client);
     // await seedRequest(client);
+
+    // await seedParty(client);
+    await seedNotifications(client);
+
     await client.end();
   }
 

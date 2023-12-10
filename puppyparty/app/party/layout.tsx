@@ -2,6 +2,7 @@ import Account from "@/app/ui/account";
 import Notifications from "@/app/ui/notifications";
 import Logo from "@/app/ui/logo";
 import Search from "@/app/ui/search";
+import { Suspense } from "react";
 
 export default function Layout({children}:{children:React.ReactNode}){
     return (
@@ -13,7 +14,9 @@ export default function Layout({children}:{children:React.ReactNode}){
                 <div className="w-fixed w-full flex-shrink flex-grow-0 px-4">
                     <div className="sticky top-0 p-4 w-full h-full">
                         <Logo/>
+                        <Suspense>
                         <Notifications />
+                        </Suspense>
                     </div>
                 </div>
                 <main className="w-full flex-grow pt-1 px-3 bg-yellow-50">

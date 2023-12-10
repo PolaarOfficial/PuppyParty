@@ -8,25 +8,29 @@ export type Puppy = {
 
 export type Notification = {
     id: string;
-    pupId: string;
-    typeOfRequest: 'Friend' | 'Party';
-    friendRequestId: string;
-    partyRequestId: string;
-    timeCreated: Date;
+    pup_id: string;
+    type_of_request: 'Friend' | 'Party';
+    friend_request_id: string;
+    party_request_id: string;
+    time_created: string;
 }
 
 export type Request = {
     id: string;
-    requesterId: string;
-    requesteeId: string;
+    requester_id: string;
+    requestee_id: string;
     status: 'Pending' | 'Accepted' | 'Declined';
 }
 
 export type Party = {
     id: string;
-    pupId: string;
+    pup_id: string;
     fkPupId: string;
     location: string;
-    timeStarted: string;
+    time_started: string;
     ended: boolean;
+}
+
+export type Name = {
+    name: string;
 }
