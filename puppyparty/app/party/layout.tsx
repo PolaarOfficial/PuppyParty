@@ -17,7 +17,6 @@ export default function Layout({children}:{children:React.ReactNode}){
                     </div>
                 </div>
                 <main className="w-full flex-grow pt-1 px-3 bg-yellow-50">
-                    Center Side
                     {children}
                 </main>
                 <div className="w-fixed w-full flex-shrink flex-grow-0 px-2">
