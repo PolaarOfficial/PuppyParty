@@ -25,3 +25,4 @@ export const formatDateToLocal = (
     return Math.floor(diff / (1000 * 60));
 
   }
+  
