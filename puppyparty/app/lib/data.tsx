@@ -16,12 +16,3 @@ export async function getCurrentAccountDetails(
     throw new Error('Failed to fetch account.');
   }
 }
-
-export async function getLatestNotifications(
-    email:string
-){
-//     try{
-//         const latestNotifications = await sql
-//     }
-return ;
-}

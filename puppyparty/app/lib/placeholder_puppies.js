@@ -51,8 +51,8 @@ const parties = [
     }
 ]
 
-
 module.exports = {
     puppies, notifications, requests, parties
   };
+  
   
