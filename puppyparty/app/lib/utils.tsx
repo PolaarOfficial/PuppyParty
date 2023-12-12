@@ -1,5 +1,5 @@
 'use server';
-import { fetchDisplayNotifications } from "@/app/lib/data";
+import { fetchDisplayNotifications, startParty } from "@/app/lib/data";
 export const formatDateToLocal = (
     dateStr: string,
     locale: string = 'en-US',
@@ -32,7 +32,13 @@ export const formatDateToLocal = (
     pup_id: string
   ) {
     const latestNotifications = await fetchDisplayNotifications(pup_id);
-    // let latestNotifications = ["test"]
     return latestNotifications
+  }
+
+  export async function startPuppyParty(
+    pup_id: string,
+    loc: string
+  ){
+    startParty(pup_id, loc);
   }
   

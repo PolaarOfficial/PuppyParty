@@ -16,7 +16,8 @@
     "haversine": "^1.1.1",
     "next": "14.0.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/haversine": "^1.1.8",

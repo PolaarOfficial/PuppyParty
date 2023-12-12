@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import Party from "@/app/ui/party"
 export default function Page(){
     return (<main>
        <p> Here is the main page, we need a map(later), a chat(v2),
@@ -7,5 +7,6 @@ export default function Page(){
         a signout button, a search bar(without function), a toggle slide for wild to friends,
         and a button to party!
         </p>
+        <Party />
         </main>);
 }

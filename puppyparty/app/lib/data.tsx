@@ -1,5 +1,6 @@
 import { sql } from '@vercel/postgres';
-import { Puppy, Notification, Name, SQLLocation , Location, NotificationPresentation} from '@/app/lib/definitions';
+import {v4 as uuidv4} from 'uuid';
+import { Puppy, Notification, Name, SQLLocation , Location, NotificationPresentation, Party} from '@/app/lib/definitions';
 import { unstable_noStore as noStore } from 'next/cache';
 export async function getCurrentAccountDetails(
     email:string
@@ -88,5 +89,22 @@ export async function fetchDisplayNotifications(
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch notifications.');
+    }
+}
+
+export async function startParty(
+    pup_id:string,
+    location:string,
+){
+    const party_id = String(uuidv4());
+    const time_started = new Date(new Date().getTime()).toLocaleString('en-US');
+    try{
+    await sql`
+    INSERT INTO parties (id, pup_id, location, time_started, ended)
+    VALUES (${party_id}, ${pup_id}, ${location}, ${time_started}, false)`
+    } catch (error){
+        console.error('Database Error:', error);
+        throw new Error('Failed to insert party.');
+
     }
 }
