@@ -1,43 +1,74 @@
+'use client';
 import Link from 'next/link';
+import haversine from 'haversine';
 
 // import clsx from 'clsx';
 // import { LatestInvoice } from '@/app/lib/definitions';
-import { fetchLatestNotifications, getPupName } from '@/app/lib/data';
-import { getTimeDifference } from '@/app/lib/utils';
-
+import { fetchDisplayNotifications, getPupName, fetchPartyLocation } from '@/app/lib/data';
+import { getTimeDifference, getNotificationsForDisplay } from '@/app/lib/utils';
+import { useState, useEffect } from 'react'
+import { Location } from '@/app/lib/definitions';
 
 export default async function Notifications(){
-    //how to pass id through Notification?
-    const pupId="3c53fbf1-7c12-4f1a-ae8e-1da66945165b";
-    const latestNotifications = await fetchLatestNotifications(pupId);
-    const name = await getPupName(pupId);
-    console.log(name);
+    const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
+    const [latestNotifications, setLatestNofications] = useState<any[]>([]);
+    useEffect(()=>{
+        const fetchCurrentLocation = () => {
+            navigator.geolocation.getCurrentPosition((position)=>{
+                const { latitude, longitude } = position.coords;
+                setCurrentLocation({latitude, longitude});
+            },
+            (error)=>{
+                console.error('Error getting location:',error);
+                }
+            );
+        };
+        fetchCurrentLocation();
+    },[]);
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            const pupId="3c53fbf1-7c12-4f1a-ae8e-1da66945165b";
+            const latestNotifications = await getNotificationsForDisplay(pupId)
+            setLatestNofications(latestNotifications);
+        };
+        fetchData();
+    },[]);
+    if(!latestNotifications && !currentLocation) return <div>Loading...</div>;
     return (
         <div>
             <div className="bg-white px-6">
             {latestNotifications.map((notification) => {
-                console.log(notification);
-            return (
-              <div
-                key={notification.id}
-              >
-                <div>
-                    <p>
-                      {name}
-                    </p>
-                    <p>
-                      {notification.type_of_request}
-                    </p>
+                //if the request is a party, calculate distance
+                let distance;
+                if(notification.type_of_request==='Party' && currentLocation){
+                    const loc = notification.location.slice(1).split(',');
+                    const start = {
+                        latitude: loc[0],
+                        longitude:loc[1]
+                    }
+
+                    distance = haversine(start, currentLocation, {unit: 'mile'})
+                    distance = Math.round( distance *100)/100
+                }
+
+                return (
+                <div key={notification.id}>
+                    <div>
+                        <p>{notification.name}</p>
+                        <p>{notification.type_of_request} </p>
+                        {distance && (
+                            <p>
+                            {distance} miles away  
+                            </p>
+                        )}
+                    </div>
+                    <p>{getTimeDifference(notification.time_created)} minutes ago</p>
+                    <br/>
                 </div>
-                <p>
-                {getTimeDifference(notification.time_created)} minutes ago
-                {/* {notification.time_created} */}
-                </p>
-                <br/>
-              </div>
-            );
-          })}
-        </div>
+                );
+            })}
+            </div>
         </div>
     );
 }

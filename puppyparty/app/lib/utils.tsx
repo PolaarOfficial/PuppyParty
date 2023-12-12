@@ -1,3 +1,5 @@
+'use server';
+import { fetchDisplayNotifications } from "@/app/lib/data";
 export const formatDateToLocal = (
     dateStr: string,
     locale: string = 'en-US',
@@ -24,5 +26,13 @@ export const formatDateToLocal = (
     const diff = currentTime-date;
     return Math.floor(diff / (1000 * 60));
 
+  }
+
+  export async function getNotificationsForDisplay(
+    pup_id: string
+  ) {
+    const latestNotifications = await fetchDisplayNotifications(pup_id);
+    // let latestNotifications = ["test"]
+    return latestNotifications
   }
   

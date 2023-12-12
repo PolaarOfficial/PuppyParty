@@ -34,3 +34,20 @@ export type Party = {
 export type Name = {
     name: string;
 }
+
+export type SQLLocation = {
+    location:string;
+}
+
+export type Location = {
+    latitude:number;
+    longitude:number;
+}
+
+export type NotificationPresentation = {
+    id: string;
+    name:string;
+    type_of_request: 'Friend' | 'Party';
+    location:string;
+    time_created:string;
+}
