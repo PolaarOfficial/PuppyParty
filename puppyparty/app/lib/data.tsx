@@ -97,6 +97,8 @@ export async function startParty(
     location:string,
 ){
     const party_id = String(uuidv4());
+    const notification_id = String(uuidv4());
+
     const time_started = new Date(new Date().getTime()).toLocaleString('en-US');
     try{
     await sql`
@@ -105,6 +107,17 @@ export async function startParty(
     } catch (error){
         console.error('Database Error:', error);
         throw new Error('Failed to insert party.');
+
+    }
+
+    try{
+        await sql`
+        INSERT INTO notifications (id, pup_id, type_of_request, time_created)
+        VALUES (${notification_id}, ${pup_id}, 'Party' , ${time_started})`
+   
+    }catch (error){
+        console.error('Database Error:', error);
+        throw new Error('Failed to insert notification.');
 
     }
 }

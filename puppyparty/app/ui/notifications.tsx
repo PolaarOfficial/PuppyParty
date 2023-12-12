@@ -38,7 +38,7 @@ export default async function Notifications(){
     return (
         <div>
             <div className="bg-white px-6">
-            {latestNotifications.map((notification) => {
+            {latestNotifications.slice(0,5).map((notification) => {
                 //if the request is a party, calculate distance
                 let distance;
                 if(notification.type_of_request==='Party' && currentLocation){
