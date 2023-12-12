@@ -9,6 +9,7 @@ import { getTimeDifference, getNotificationsForDisplay } from '@/app/lib/utils';
 import { useState, useEffect } from 'react'
 import { Location } from '@/app/lib/definitions';
 
+ 
 export default async function Notifications(){
     const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
     const [latestNotifications, setLatestNofications] = useState<any[]>([]);

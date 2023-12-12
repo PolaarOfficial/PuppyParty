@@ -2,6 +2,10 @@ import { sql } from '@vercel/postgres';
 import {v4 as uuidv4} from 'uuid';
 import { Puppy, Notification, Name, SQLLocation , Location, NotificationPresentation, Party} from '@/app/lib/definitions';
 import { unstable_noStore as noStore } from 'next/cache';
+import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function getCurrentAccountDetails(
     email:string
 ){
@@ -72,19 +76,21 @@ export async function fetchPartyLocation(
 export async function fetchDisplayNotifications(
     pup_id:string
 ){
-    noStore();
     try{
+        noStore();
         const latestNotifications = await sql<NotificationPresentation>`
-        SELECT notifications.id, puppies.name, notifications.type_of_request, parties.location, notifications.time_created
+        SELECT distinct notifications.id, puppies.name, notifications.type_of_request, parties.location, notifications.time_created
         FROM notifications
         inner join puppies on puppies.id=notifications.pup_id
         inner join parties on parties.pup_id = notifications.pup_id
-        where notifications.pup_id=${pup_id} and time_created > (now() - interval '350 minutes')
+        where notifications.pup_id=${pup_id} and time_created > (now() - interval '305 minutes')
         ORDER BY notifications.time_created desc
         `;
+        console.log('db return', latestNotifications);
         const updatedNotifications = latestNotifications.rows.map((notification) => ({
             ...notification,
           }));
+        //  const updatedNotifications = NextResponse.json({temp:latestNotifications.rows[0]});
           console.log('here', updatedNotifications);
         return updatedNotifications;
     } catch (error) {
