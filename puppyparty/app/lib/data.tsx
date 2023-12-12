@@ -2,7 +2,6 @@ import { sql } from '@vercel/postgres';
 import {v4 as uuidv4} from 'uuid';
 import { Puppy, Notification, Name, SQLLocation , Location, NotificationPresentation, Party} from '@/app/lib/definitions';
 import { unstable_noStore as noStore } from 'next/cache';
-import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
