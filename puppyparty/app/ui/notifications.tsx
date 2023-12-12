@@ -29,10 +29,13 @@ export default async function Notifications(){
     useEffect(()=>{
         const fetchData = async () => {
             const pupId="3c53fbf1-7c12-4f1a-ae8e-1da66945165b";
+            setLatestNofications([]);
             const latestNotifications = await getNotificationsForDisplay(pupId)
             setLatestNofications(latestNotifications);
         };
         fetchData();
+        const intervalId = setInterval(fetchData, 5000);
+        return () => clearInterval(intervalId);
     },[]);
     if(!latestNotifications && !currentLocation) return <div>Loading...</div>;
     return (
@@ -41,6 +44,7 @@ export default async function Notifications(){
             {latestNotifications.slice(0,5).map((notification) => {
                 //if the request is a party, calculate distance
                 let distance;
+                let distanceString;
                 if(notification.type_of_request==='Party' && currentLocation){
                     const loc = notification.location.slice(1).split(',');
                     const start = {
@@ -50,6 +54,7 @@ export default async function Notifications(){
 
                     distance = haversine(start, currentLocation, {unit: 'mile'})
                     distance = Math.round( distance *100)/100
+                    distanceString = String(distance) + " miles away"
                 }
 
                 return (
@@ -57,11 +62,11 @@ export default async function Notifications(){
                     <div>
                         <p>{notification.name}</p>
                         <p>{notification.type_of_request} </p>
-                        {distance && (
-                            <p>
-                            {distance} miles away  
-                            </p>
-                        )}
+                        <p>
+                            {distance && (
+                                <>{distanceString} </>
+                            )}
+                        </p>
                     </div>
                     <p>{getTimeDifference(notification.time_created)} minutes ago</p>
                     <br/>

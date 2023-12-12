@@ -79,7 +79,8 @@ export async function fetchDisplayNotifications(
         FROM notifications
         inner join puppies on puppies.id=notifications.pup_id
         inner join parties on parties.pup_id = notifications.pup_id
-        where notifications.pup_id=${pup_id}
+        where notifications.pup_id=${pup_id} and time_created > (now() - interval '350 minutes')
+        ORDER BY notifications.time_created desc
         `;
         const updatedNotifications = latestNotifications.rows.map((notification) => ({
             ...notification,
