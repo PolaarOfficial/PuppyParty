@@ -72,7 +72,6 @@ export async function fetchDisplayNotifications(
     pup_id:string
 ){
     noStore();
-    console.log('here')
     try{
         const latestNotifications = await sql<NotificationPresentation>`
         SELECT notifications.id, puppies.name, notifications.type_of_request, parties.location, notifications.time_created
@@ -84,7 +83,7 @@ export async function fetchDisplayNotifications(
         const updatedNotifications = latestNotifications.rows.map((notification) => ({
             ...notification,
           }));
-          console.log('here');
+          console.log('here', updatedNotifications);
         return updatedNotifications;
     } catch (error) {
         console.error('Database Error:', error);
