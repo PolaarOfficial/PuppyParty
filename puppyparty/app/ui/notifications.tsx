@@ -1,7 +1,3 @@
-import Link from 'next/link';
-
-// import clsx from 'clsx';
-// import { LatestInvoice } from '@/app/lib/definitions';
 import { fetchLatestNotifications, getPupName } from '@/app/lib/data';
 import { getTimeDifference } from '@/app/lib/utils';
 
